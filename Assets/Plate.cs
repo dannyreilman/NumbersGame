@@ -4,6 +4,9 @@ using UnityEngine.UI;
 using UnityEngine;
 
 public class Plate : Unlockable {
+	
+	public static bool BUY_ONE_PLATE = false;
+
 	public ResourceStruct unlockCost;
 
 	private Color unBoughtColor;
@@ -13,6 +16,13 @@ public class Plate : Unlockable {
 	private bool bought = false;
 	private GameObject buyButton = null;
 	
+	private RectTransform rectTrans;
+
+	void Awake()
+	{
+		rectTrans = GetComponent<RectTransform>();
+	}
+
 	void Start()
 	{
 			buyButton = transform.GetChild(0).gameObject;
@@ -24,6 +34,15 @@ public class Plate : Unlockable {
 		if(!locked && !bought)
 		{
 			buyButton.GetComponent<Button>().enabled = ResourceHandler.instance.resource >= unlockCost;
+
+			if(BUY_ONE_PLATE)
+			{
+				if(RectTransformUtility.RectangleContainsScreenPoint(rectTrans, Input.mousePosition))
+				{
+					BUY_ONE_PLATE = false;
+					BuyPlate();
+				}
+			}
 		}
 	}
 

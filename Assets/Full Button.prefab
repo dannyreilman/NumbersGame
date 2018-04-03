@@ -191,7 +191,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224022301920020850}
   - component: {fileID: 114771561361767592}
-  - component: {fileID: 114659181603525364}
   m_Layer: 5
   m_Name: Full Button
   m_TagString: Untagged
@@ -282,7 +281,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Quick Ramp
+  m_Text: Slow Ramp
 --- !u!114 &114030808758535736
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -516,21 +515,6 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114659181603525364
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1734320840184190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23c6b730c38754c49a51e9931391c527, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  upgradeAmt:
-    money: 0
-    red: 0
-    blue: 0
 --- !u!114 &114710282014356690
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -655,29 +639,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cost:
-    money: 0
-    red: 0
-    blue: 5
+    resourceArray: 0000000000000000000000000000000000000000000000000000000000000000
   returnValue:
-    money: 1
-    red: 0
-    blue: 6
+    resourceArray: 0000000000000000000000000000000000000000000000000000000000000000
   buyCost:
-    money: 0
-    red: 0
-    blue: 0
+    resourceArray: 0000000000000000000000000000000000000000000000000000000000000000
   upgradeCost:
-    money: 0
-    red: 0
-    blue: 0
-  maxLevel: 100
+    resourceArray: 0000000000000000000000000000000000000000000000000000000000000000
+  maxLevel: 0
   level: 0
-  delay: 2
-  obj: {fileID: 114030808758535736}
+  delay: 0
   upgradeObj: {fileID: 114712542304255690}
   levelCounter: {fileID: 114804125977643022}
   bar: {fileID: 114151129610586204}
-  locked: 0
   lockedObj: {fileID: 1073878015338300}
   interactable: 0
   upgradeable: 1
@@ -916,7 +890,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -123, y: -209}
+  m_AnchoredPosition: {x: -42, y: -10.7}
   m_SizeDelta: {x: 60, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224146468688932522

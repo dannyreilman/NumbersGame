@@ -1,61 +1,72 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-	
+
+
 [System.Serializable]
 public enum ResourceEnum
 {
-	money, red, blue
+	money, red, blue, green, yellow, black, white, earth
 }
 
 [System.Serializable]
-public struct ResourceStruct {
+public class ResourceStruct 
+{
+	private const int resourceCount = 8;
+
+	[NamedArray(typeof(ResourceEnum))] 
+	public int[] resourceArray = new int[resourceCount];
 
 	public int GetResource(ResourceEnum e)
 	{
-		if(e == ResourceEnum.money)
-		{
-			return money;
-		}
-		else if(e == ResourceEnum.red)
-		{
-			return red;
-		}
-		else if(e == ResourceEnum.blue)
-		{
-			return blue;
-		}
-		else
-		{
-			Assert.AreEqual(e, ResourceEnum.blue);
-			return -1;
-		}
+		return resourceArray[(int)e];
 	}
 
-	public int money;
-	public int red;
-	public int blue;
-
-	public ResourceStruct(int money, int red, int blue)
+	public ResourceStruct(int money, int red, int blue, int green, int yellow, int black, int white, int earth)
 	{
-		this.money = money;
-		this.red = red;
-		this.blue = blue;
+		resourceArray[0] = money;
+		resourceArray[1] = red;
+		resourceArray[2] = blue;
+		resourceArray[3] = green;
+		resourceArray[4] = yellow;
+		resourceArray[5] = black;
+		resourceArray[6] = white;
+		resourceArray[7] = earth;
+	}
+
+	public ResourceStruct()
+	{
+		resourceArray[0] = 0;
+		resourceArray[1] = 0;
+		resourceArray[2] = 0;
+		resourceArray[3] = 0;
+		resourceArray[4] = 0;
+		resourceArray[5] = 0;
+		resourceArray[6] = 0;
+		resourceArray[7] = 0;
 	}
 
 
 	public override string ToString()
 	{
-		return "Money: " + money + " \tRed: " + red + " \tBlue: " + blue; 
+		string toReturn = "";
+		for(int i = 0; i < resourceCount; ++i)
+		{
+			toReturn += Enum.GetName(typeof(ResourceEnum), i) + ": " + resourceArray[i] + " \t";
+		}
+		return toReturn;
 	}
 
 	public static ResourceStruct operator+ (ResourceStruct a, ResourceStruct b)
 	{
 		ResourceStruct returnVal = new ResourceStruct();
-		returnVal.money = a.money + b.money;
-		returnVal.red = a.red + b.red;
-		returnVal.blue = a.blue + b.blue;
+
+		for(int i = 0; i < resourceCount; ++i)
+		{
+			returnVal.resourceArray[i] = a.resourceArray[i] + b.resourceArray[i];
+		}
 
 		return returnVal;
 	}
@@ -63,9 +74,11 @@ public struct ResourceStruct {
 	public static ResourceStruct operator* (ResourceStruct a, float b)
 	{
 		ResourceStruct returnVal = new ResourceStruct();
-		returnVal.money = Mathf.CeilToInt(a.money * b);
-		returnVal.red = Mathf.CeilToInt(a.red * b);
-		returnVal.blue = Mathf.CeilToInt(a.blue * b);
+				
+		for(int i = 0; i < resourceCount; ++i)
+		{
+			returnVal.resourceArray[i] = (int)(a.resourceArray[i] * b);
+		}
 
 		return returnVal;
 	}
@@ -73,9 +86,11 @@ public struct ResourceStruct {
 	public static ResourceStruct operator* (ResourceStruct a, ResourceStruct b)
 	{
 		ResourceStruct returnVal = new ResourceStruct();
-		returnVal.money = a.money * b.money;
-		returnVal.red = a.red * b.red;
-		returnVal.blue = a.blue * b.blue;
+
+		for(int i = 0; i < resourceCount; ++i)
+		{
+			returnVal.resourceArray[i] = a.resourceArray[i] * b.resourceArray[i];
+		}
 
 		return returnVal;
 	}
@@ -88,24 +103,24 @@ public struct ResourceStruct {
 	//If b is larger in ANY way, then a is not >= b
 	public static bool operator>= (ResourceStruct a, ResourceStruct b)
 	{
-		if(a.money < b.money)
-			return false;
-		if(a.red < b.red)
-			return false;
-		if(a.blue < b.blue)
-			return false;
+		for(int i = 0; i < resourceCount; ++i)
+		{
+			if(b.resourceArray[i] > a.resourceArray[i])
+				return false;
+		}
+
 		return true;
 	}
 
 	//If a is larger in ANY way, then a is not <= b
 	public static bool operator<= (ResourceStruct a, ResourceStruct b)
 	{
-		if(a.money > b.money)
-			return false;
-		if(a.red > b.red)
-			return false;
-		if(a.red > b.red)
-			return false;
+		for(int i = 0; i < resourceCount; ++i)
+		{
+			if(a.resourceArray[i] > b.resourceArray[i])
+				return false;
+		}
+		
 		return true;
 	}
 }

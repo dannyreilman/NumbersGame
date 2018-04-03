@@ -45,13 +45,13 @@ public class TransactionButton : Unlockable {
 
 	public float delay;
 
-	public Button obj;
+	private Button obj;
 	public Button upgradeObj;
 	public Text levelCounter;
 	
 	public Scrollbar bar;
 	
-	public bool locked;
+	private bool locked = false;
 	public GameObject lockedObj;
 
 	[HideInInspector]
@@ -80,6 +80,7 @@ public class TransactionButton : Unlockable {
 
 	void Awake()
 	{
+		obj = transform.GetChild(0).GetComponent<Button>();
 		rectTrans = GetComponent<RectTransform>();
 		Transform t = transform;
 		while(t.GetComponent<Canvas>() == null)
