@@ -8,6 +8,7 @@ public class ResourceHandler : MonoBehaviour
 
 	public static ResourceHandler instance = null;
 
+	public Color moneyColor;
 	public Color redColor;
 	public Color blueColor;
 	public Color greenColor;
@@ -24,11 +25,13 @@ public class ResourceHandler : MonoBehaviour
 
 	private static ResourceStruct onedollar = new ResourceStruct(1, 0, 0, 0, 0, 0, 0, 0);
 
-	public Text text;
+	public RepresentStructHandler representer;
 
 	// Use this for initialization
 	void Awake () {
 		DontDestroyOnLoad(gameObject);
+
+		representer = GetComponentInChildren<RepresentStructHandler>();
 
 		if(instance == null || instance.Equals(null))
 		{
@@ -43,7 +46,7 @@ public class ResourceHandler : MonoBehaviour
 	}
 	void Update()
 	{
-		text.text = resource.ToString();
+		representer.Represent(resource, true);
 
 		Plate.BUY_ONE_PLATE = Input.GetKeyDown(KeyCode.R);
 	}
@@ -52,6 +55,8 @@ public class ResourceHandler : MonoBehaviour
 	{
 		switch(toGet)
 		{
+			case ResourceEnum.money:
+				return moneyColor;
 			case ResourceEnum.red:
 				return redColor;
 			case ResourceEnum.blue:

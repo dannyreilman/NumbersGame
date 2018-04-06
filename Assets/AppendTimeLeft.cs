@@ -23,6 +23,6 @@ public class AppendTimeLeft : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		textObj.text = oldString + (int)MarketManager.instance.timeLeft;
+		textObj.text = (int)MarketManager.instance.timeLeft + oldString;
 	}
 }

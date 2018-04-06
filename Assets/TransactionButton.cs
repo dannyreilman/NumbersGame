@@ -76,6 +76,9 @@ public class TransactionButton : Unlockable {
 	public GameObject upgradeRepeatObj;
 	public GameObject repeatObj;
 
+	private RepresentStructHandler costRep;
+	private RepresentStructHandler rewardRep;
+
 	private Canvas parentCanvas;
 
 	void Awake()
@@ -89,11 +92,18 @@ public class TransactionButton : Unlockable {
 		}
 
 		parentCanvas = t.GetComponent<Canvas>();
+
+		costRep = transform.GetChild(5).GetComponent<RepresentStructHandler>();
+		rewardRep = transform.GetChild(6).GetComponent<RepresentStructHandler>();
 	}
 
 	void Start()
 	{
 		upgradeBehaviour = GetComponent<UpgradeBehaviour>();
+	
+		costRep.Represent(cost);
+		rewardRep.Represent(returnValue);
+
 		if(upgradeBehaviour == null || upgradeBehaviour.Equals(null))
 		{
 			upgradeable = false;
@@ -173,6 +183,7 @@ public class TransactionButton : Unlockable {
 		if(ResourceHandler.instance.resource >= buyUpgradeCost && upgradeable)
 		{
 			ResourceHandler.instance.resource -= buyUpgradeCost;
+
 			if(level > 0)
 			{
 				upgradeBehaviour.DoUpgrade();
@@ -180,6 +191,9 @@ public class TransactionButton : Unlockable {
 
 			++level;
 			levelCounter.text = level.ToString();
+
+			costRep.Represent(cost);
+			rewardRep.Represent(returnValue);
 
 			if(level > 0)
 			{
