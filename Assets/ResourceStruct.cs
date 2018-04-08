@@ -123,4 +123,30 @@ public class ResourceStruct
 		
 		return true;
 	}
+
+	public static float operator/(ResourceStruct a, ResourceStruct b)
+	{
+		float ratio = 1.0f;
+		for(int i = 0; i < resourceCount; ++i)
+		{
+			if((int)(b.resourceArray[i] * ratio) != a.resourceArray[i])
+			{
+				if(a.resourceArray[i] == 0)
+				{
+					Debug.Log("Strange things are happening in the ResourceStruct division");
+				}
+				else
+				{
+					if(ratio != 1.0f)
+					{
+						Debug.Log("Ratio changed twice, check operator/");
+					}
+
+					ratio = a.resourceArray[i] / (float)b.resourceArray[i];
+				}
+			}
+		}
+
+		return ratio;
+	}
 }

@@ -4,12 +4,29 @@ using UnityEngine;
 using UnityEngine.UI;
 public class TransactionButton : Unlockable {
 
+	//This initializes the hideininspector values below
+	public ButtonBehaviour behaviour;
+	
+	[HideInInspector]
 	public ResourceStruct cost;
-	public ResourceStruct returnValue;
 
+	[HideInInspector]
+	public ResourceStruct returnValue;
+	
+	[HideInInspector]
 	public ResourceStruct buyCost;
 
+	[HideInInspector]
 	public ResourceStruct upgradeCost;
+
+	[HideInInspector]
+	public int maxLevel;
+	
+	[HideInInspector]
+	public int level = 0;
+
+	[HideInInspector]
+	public float delay;
 
 	private ResourceStruct buyUpgradeCost
 	{
@@ -38,30 +55,20 @@ public class TransactionButton : Unlockable {
 		}
 	}
 
-	public int maxLevel;
-	
-	[HideInInspector]
-	public int level = 0;
-
-	public float delay;
-
 	private Button obj;
-	public Button upgradeObj;
-	public Text levelCounter;
+	private Button upgradeObj;
+	private Text levelCounter;
 	
-	public Scrollbar bar;
+	private Scrollbar bar;
 	
 	private bool locked = false;
-	public GameObject lockedObj;
+	private GameObject lockedObj;
 
-	[HideInInspector]
-	public bool interactable = false;
+	private bool interactable = false;
 
-	[HideInInspector]
-	public bool upgradeable = true;
+	private bool upgradeable = true;
 
-	[HideInInspector]
-	public bool running = false;
+	private bool running = false;
 
 	private float timepassed = 0f;
 	// Use this for initialization
@@ -73,8 +80,9 @@ public class TransactionButton : Unlockable {
 	private bool repeat = false;
 	private bool upgradeRepeat = false;
 
-	public GameObject upgradeRepeatObj;
-	public GameObject repeatObj;
+	
+	private GameObject upgradeRepeatObj;
+	private GameObject repeatObj;
 
 	private RepresentStructHandler costRep;
 	private RepresentStructHandler rewardRep;
@@ -84,21 +92,33 @@ public class TransactionButton : Unlockable {
 	void Awake()
 	{
 		obj = transform.GetChild(0).GetComponent<Button>();
+		upgradeObj = transform.GetChild(1).GetComponent<Button>();
+		levelCounter = transform.GetChild(2).GetComponentInChildren<Text>();
+		bar = transform.GetChild(3).GetComponentInChildren<Scrollbar>();
+		lockedObj = transform.GetChild(4).gameObject;
+		upgradeRepeatObj = transform.GetChild(5).gameObject;
+		repeatObj = transform.GetChild(6).gameObject;
+		costRep = transform.GetChild(7).GetComponent<RepresentStructHandler>();
+		rewardRep = transform.GetChild(8).GetComponent<RepresentStructHandler>();
+
 		rectTrans = GetComponent<RectTransform>();
 		Transform t = transform;
+
 		while(t.GetComponent<Canvas>() == null)
 		{
 			t = t.parent;
 		}
 
 		parentCanvas = t.GetComponent<Canvas>();
-
-		costRep = transform.GetChild(5).GetComponent<RepresentStructHandler>();
-		rewardRep = transform.GetChild(6).GetComponent<RepresentStructHandler>();
 	}
 
 	void Start()
 	{
+		behaviour.Initialize(this);
+
+		interactable = level > 0;
+		levelCounter.text = level.ToString();
+	
 		upgradeBehaviour = GetComponent<UpgradeBehaviour>();
 	
 		costRep.Represent(cost);
@@ -107,7 +127,6 @@ public class TransactionButton : Unlockable {
 		if(upgradeBehaviour == null || upgradeBehaviour.Equals(null))
 		{
 			upgradeable = false;
-			level = 1;
 		}
 	}
 
@@ -122,6 +141,7 @@ public class TransactionButton : Unlockable {
 		repeatObj.SetActive(repeat);
 
 		obj.interactable = ResourceHandler.instance.resource >= cost && interactable;
+
 		bar.gameObject.SetActive(running);
 		bar.value = timepassed / delay;
 		
