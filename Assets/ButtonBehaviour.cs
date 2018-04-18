@@ -11,6 +11,7 @@ public class ButtonBehaviour : ScriptableObject
 		None, Flat, Width
 	}
 
+	public string name;
 	public UpgradeType upgradeType;
 	public ResourceStruct buyCost;
 	public ResourceStruct initCost;
@@ -34,6 +35,7 @@ public class ButtonBehaviour : ScriptableObject
 
 	public void Initialize(TransactionButton button)
 	{
+		button.SetName(name);
 		button.buyCost = buyCost;
 		button.cost = initCost;
 		button.returnValue = initReturn;

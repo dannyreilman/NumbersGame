@@ -25,8 +25,8 @@ public class Plate : Unlockable {
 
 	void Start()
 	{
-			buyButton = transform.GetChild(0).gameObject;
-			unBoughtColor = GetComponent<Image>().color;
+		buyButton = transform.GetChild(0).gameObject;
+		unBoughtColor = GetComponent<Image>().color;
 	}
 
 	void Update()

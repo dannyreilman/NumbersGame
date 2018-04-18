@@ -18,12 +18,13 @@ public class ResourceHandler : MonoBehaviour
 	public Color earthColor;
 
 	public ResourceStruct resource = new ResourceStruct();
+	public ResourceStruct enemyResource = new ResourceStruct();
 
 	public int startingGold;
 	public int ambientMoney;
 	public float ambientPeriod;
 
-	private static ResourceStruct onedollar = new ResourceStruct(1, 0, 0, 0, 0, 0, 0, 0);
+	private static ResourceStruct onedollar = new ResourceStruct(1, 0, 0, 0, 0, 0, 0);
 
 	public RepresentStructHandler representer;
 
@@ -69,8 +70,6 @@ public class ResourceHandler : MonoBehaviour
 				return blackColor;
 			case ResourceEnum.white:
 				return whiteColor;
-			case ResourceEnum.earth:
-				return earthColor;
 			default:
 				Debug.Log(toGet + "Not implemented");
 				return new Color(0,0,0,0);

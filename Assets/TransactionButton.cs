@@ -116,7 +116,7 @@ public class TransactionButton : Unlockable {
 	{
 		behaviour.Initialize(this);
 
-		interactable = level > 0;
+		interactable = level > 0 && !locked;
 		levelCounter.text = level.ToString();
 	
 		upgradeBehaviour = GetComponent<UpgradeBehaviour>();
@@ -127,6 +127,11 @@ public class TransactionButton : Unlockable {
 		if(upgradeBehaviour == null || upgradeBehaviour.Equals(null))
 		{
 			upgradeable = false;
+			upgradeObj.gameObject.SetActive(false);
+			upgradeRepeatObj.SetActive(false);
+			
+			 interactable = false;
+			levelCounter.transform.parent.gameObject.SetActive(false);
 		}
 	}
 
@@ -250,15 +255,15 @@ public class TransactionButton : Unlockable {
 	{
 		locked = false;
 
-		if(!(upgradeObj == null || upgradeObj.Equals(null)))
-		{
-			upgradeable = true;
+		if(upgradeBehaviour == null)
+		{			
+			interactable = true;
+			level = 1;
+			upgradeable = false;
 		}
 		else
 		{
-			upgradeable = false;
-			interactable = true;
-			level = 1;
+			upgradeable = true;
 		}
 
 		lockedObj.SetActive(false);	
@@ -294,4 +299,10 @@ public class TransactionButton : Unlockable {
 			DoTransaction();
 		}
 	}
+	
+	public void SetName(string s)
+	{
+		transform.GetChild(0).GetChild(0).GetComponent<Text>().text = s;
+	}
 }
+

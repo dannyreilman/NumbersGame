@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class BarHandler : MonoBehaviour 
 {
-	public static int LOCK_MIN = 500;
-	public static float LOCK_PERCENT = 0.75f;
+	[HideInInspector]
 	public ResourceEnum toHandle;
 	public float otherAmount = 0.0f;
 	
@@ -19,13 +18,13 @@ public class BarHandler : MonoBehaviour
 		enemyBar = transform.GetChild(1) as RectTransform;
 		
 		//Set top line
-		(transform.GetChild(2) as RectTransform).anchorMin  = new Vector2(0f, LOCK_PERCENT);
-		(transform.GetChild(2) as RectTransform).anchorMax = new Vector2(1.0f, LOCK_PERCENT);
+		(transform.GetChild(2) as RectTransform).anchorMin  = new Vector2(0f, MarketManager.LOCK_PERCENT);
+		(transform.GetChild(2) as RectTransform).anchorMax = new Vector2(1.0f, MarketManager.LOCK_PERCENT);
 
 		
 		//Set bottom line
-		(transform.GetChild(3) as RectTransform).anchorMin  = new Vector2(0f,  1 - LOCK_PERCENT);
-		(transform.GetChild(3) as RectTransform).anchorMax = new Vector2(1.0f,  1 - LOCK_PERCENT);
+		(transform.GetChild(3) as RectTransform).anchorMin  = new Vector2(0f,  1 - MarketManager.LOCK_PERCENT);
+		(transform.GetChild(3) as RectTransform).anchorMax = new Vector2(1.0f,  1 - MarketManager.LOCK_PERCENT);
 	}
 
 	void Start()
@@ -37,10 +36,10 @@ public class BarHandler : MonoBehaviour
 	void Update () 
 	{
 		float amount = ResourceHandler.instance.resource.GetResource(toHandle);
-		if(amount + otherAmount < (LOCK_MIN/LOCK_PERCENT))
+		if(amount + otherAmount < (MarketManager.LOCK_MIN/MarketManager.LOCK_PERCENT))
 		{
-			friendlyBar.anchorMax = new Vector2(1.0f, amount * LOCK_PERCENT / (float)LOCK_MIN);
-			enemyBar.anchorMin = new Vector2(0f, 1 - (otherAmount / (float)LOCK_MIN));
+			friendlyBar.anchorMax = new Vector2(1.0f, amount * MarketManager.LOCK_PERCENT / (float)MarketManager.LOCK_MIN);
+			enemyBar.anchorMin = new Vector2(0f, 1 - (otherAmount / (float)MarketManager.LOCK_MIN));
 		}
 		else
 		{

@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class ScreenShift : MonoBehaviour {
 
+	public static GraphicRaycaster raycaster;
+	public static EventSystem system;
 	private float shiftAmt = 0.0f;
 	float speed = 10f;
 	
@@ -18,6 +21,8 @@ public class ScreenShift : MonoBehaviour {
 	void Awake()
 	{
 		paneTransform = GetComponent<RectTransform>();
+		raycaster = GetComponentInParent<GraphicRaycaster>();
+		system = GetComponentInParent<EventSystem>();
 	}
 
 	void Update () 

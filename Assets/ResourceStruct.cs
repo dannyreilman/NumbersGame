@@ -8,13 +8,13 @@ using UnityEngine.Assertions;
 [System.Serializable]
 public enum ResourceEnum
 {
-	money, red, blue, green, yellow, black, white, earth
+	money, red, blue, green, yellow, black, white
 }
 
 [System.Serializable]
 public class ResourceStruct 
 {
-	private const int resourceCount = 8;
+	public const int resourceCount = 7;
 
 	[NamedArray(typeof(ResourceEnum))] 
 	public int[] resourceArray = new int[resourceCount];
@@ -24,7 +24,7 @@ public class ResourceStruct
 		return resourceArray[(int)e];
 	}
 
-	public ResourceStruct(int money, int red, int blue, int green, int yellow, int black, int white, int earth)
+	public ResourceStruct(int money, int red, int blue, int green, int yellow, int black, int white)
 	{
 		resourceArray[0] = money;
 		resourceArray[1] = red;
@@ -33,7 +33,6 @@ public class ResourceStruct
 		resourceArray[4] = yellow;
 		resourceArray[5] = black;
 		resourceArray[6] = white;
-		resourceArray[7] = earth;
 	}
 
 	public ResourceStruct()
@@ -45,7 +44,6 @@ public class ResourceStruct
 		resourceArray[4] = 0;
 		resourceArray[5] = 0;
 		resourceArray[6] = 0;
-		resourceArray[7] = 0;
 	}
 
 
