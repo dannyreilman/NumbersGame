@@ -32,9 +32,32 @@ public class MercTrayMain : MonoBehaviour
 	void Start()
 	{
 		MercTrayElement.parentOfDrag = transform.parent.parent;
+		UpdateKeyBinds();
 	}
 
 	int dragging = -1;
+
+	public void UpdateKeyBinds()
+	{
+		int i;
+		for(i = 0; i < 10 && i < transform.childCount; ++i)
+		{
+			MercTrayElement child = transform.GetChild(i).GetComponent<MercTrayElement>();
+			if(child != null)
+			{
+				child.SetKeybind(bindingArray[i]);
+			}
+		}
+
+		for(; i < transform.childCount; ++i)
+		{
+			MercTrayElement child = transform.GetChild(i).GetComponent<MercTrayElement>();
+			if(child != null)
+			{
+				child.SetNoBind();
+			}
+		}
+	}
 
 	// Update is called once per frame
 	void Update () 

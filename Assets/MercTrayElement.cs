@@ -21,10 +21,11 @@ public class MercTrayElement : MonoBehaviour
 	NumberPanel attackPanel;
 	NumberPanel speedPanel;
 
+	private float attackProgress = 0.0f;
 	void Start()
 	{
 		behaviour.Initialize();
-		child = (RectTransform)transform.GetChild(0);
+		child = (RectTransform)transform.GetChild(1);
 		healthPanel = child.GetChild(0).GetComponent<NumberPanel>();
 		attackPanel = child.GetChild(1).GetComponent<NumberPanel>();
 		speedPanel = child.GetChild(2).GetComponent<NumberPanel>();
@@ -58,7 +59,25 @@ public class MercTrayElement : MonoBehaviour
 		{
 			//In battlefield state
 			behaviour.Update();
+			attackProgress += behaviour.attackSpeed * Time.deltaTime;
+
+			while(attackProgress > 1)
+			{
+				activeSlot.doAttack(behaviour.attack);
+				attackProgress -= 1;
+			}
 		}
+	}
+
+	public void SetKeybind(KeyCode k)
+	{
+		transform.GetChild(2).gameObject.SetActive(true);
+		transform.GetChild(2).GetChild(1).GetComponent<Text>().text = k.ToString();
+	}
+
+	public void SetNoBind()
+	{
+		transform.GetChild(2).gameObject.SetActive(false);
 	}
 
 	public bool inPlay()
@@ -85,7 +104,7 @@ public class MercTrayElement : MonoBehaviour
 		{
 			MercSlot slot = r.gameObject.GetComponent<MercSlot>();
 
-			if(slot != null && slot.occupied == false)
+			if(slot != null && slot.occupied == false && slot.ally == true)
 			{
 				activeSlot = slot;
 				slot.occupied = true;
@@ -97,6 +116,7 @@ public class MercTrayElement : MonoBehaviour
 		}
 
 		child.SetParent(transform);
+		child.SetSiblingIndex(1);
 		child.localPosition = new Vector3(0,0,0);
 	}
 

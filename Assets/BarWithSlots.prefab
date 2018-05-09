@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 114240616474613232}
   - component: {fileID: 114859252670209866}
   - component: {fileID: 114989738621986140}
+  - component: {fileID: 114963110053869162}
   m_Layer: 5
   m_Name: EnemySlot
   m_TagString: Untagged
@@ -430,7 +431,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d3a00fea5b005c468df47d0e4b660b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  opposite: {fileID: 114963110053869162}
+  row: 0
   occupied: 0
+  ally: 1
 --- !u!114 &114669530576793544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -551,6 +555,21 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114963110053869162
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1273669071397992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3a00fea5b005c468df47d0e4b660b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  opposite: {fileID: 114581093346503664}
+  row: 0
+  occupied: 0
+  ally: 0
 --- !u!114 &114989738621986140
 MonoBehaviour:
   m_ObjectHideFlags: 1
