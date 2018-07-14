@@ -20,7 +20,7 @@ public class ResourceHandler : MonoBehaviour
 	public ResourceStruct resource = new ResourceStruct();
 	public ResourceStruct enemyResource = new ResourceStruct();
 
-	public int startingGold;
+	public ResourceStruct startingResource;
 	public int ambientMoney;
 	public float ambientPeriod;
 
@@ -38,7 +38,7 @@ public class ResourceHandler : MonoBehaviour
 		{
 			instance = this;
 			StartCoroutine(AmbientRoutine());
-			resource = onedollar * startingGold;
+			resource = startingResource;
 		}
 		else
 		{

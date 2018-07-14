@@ -293,6 +293,8 @@ public class TransactionButton : Unlockable {
 		
 		ResourceHandler.instance.resource += returnValue;
 		UpdateInteractables();
+		if(upgradeObj != null)
+			upgradeObj.Finish();
 		transactionObj.Finish();
 	}
 	
