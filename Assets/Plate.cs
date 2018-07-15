@@ -6,6 +6,7 @@ using UnityEngine;
 public class Plate : Unlockable {
 	
 	public static bool BUY_ONE_PLATE = false;
+	public static KeyCode buyKey = KeyCode.R;
 
 	public ResourceStruct unlockCost;
 

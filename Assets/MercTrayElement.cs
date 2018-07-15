@@ -4,31 +4,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class MercTrayElement : MonoBehaviour 
+public class MercTrayElement : MonoBehaviour
 {
-	public static MercTrayElement dragging = null;
-	public static bool draggingMouse = false;
-	public static MercSlot hovering = null;
-	public static Transform parentOfDrag = null;
-
 	public Mercenary behaviour;
-
-	RectTransform child;
-
-	MercSlot activeSlot = null;
+	public KeyCode binding = KeyCode.None;
+	
+	Transform parent;
+	MercSlot occupyingSlot = null;
 
 	NumberPanel healthPanel;
 	NumberPanel attackPanel;
 	NumberPanel speedPanel;
-
+	Transform keybindDisplay;
 	private float attackProgress = 0.0f;
 	void Start()
 	{
 		behaviour.Initialize();
-		child = (RectTransform)transform.GetChild(1);
-		healthPanel = child.GetChild(0).GetComponent<NumberPanel>();
-		attackPanel = child.GetChild(1).GetComponent<NumberPanel>();
-		speedPanel = child.GetChild(2).GetComponent<NumberPanel>();
+		parent = transform.parent;
+		healthPanel = transform.GetChild(0).GetComponent<NumberPanel>();
+		attackPanel = transform.GetChild(1).GetComponent<NumberPanel>();
+		speedPanel = transform.GetChild(2).GetComponent<NumberPanel>();
+		keybindDisplay = parent.GetChild(2);
 	}
 
 	// Update is called once per frame
@@ -38,24 +34,7 @@ public class MercTrayElement : MonoBehaviour
 		attackPanel.displayNum = behaviour.attack;
 		speedPanel.displayNum = behaviour.attackSpeed;
 
-		if(activeSlot == null)
-		{
-			//In tray state
-			if(dragging != null && draggingMouse && (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Space)))
-			{
-				dragging.stopDragging();
-				draggingMouse = false;
-				dragging = null;
-			}
-
-			if(dragging == null && Input.GetMouseButtonDown(0) && RectTransformUtility.RectangleContainsScreenPoint((RectTransform)transform, Input.mousePosition))
-			{
-				setDragging();
-				draggingMouse = true;
-				updatePosition();
-			}
-		}
-		else
+		if(occupyingSlot != null)
 		{
 			//In battlefield state
 			behaviour.Update();
@@ -63,65 +42,88 @@ public class MercTrayElement : MonoBehaviour
 
 			while(attackProgress > 1)
 			{
-				activeSlot.doAttack(behaviour.attack);
+				occupyingSlot.doAttack(behaviour.attack);
 				attackProgress -= 1;
+			}
+
+			if(behaviour.health <= 0)
+			{
+				Die();
 			}
 		}
 	}
 
 	public void SetKeybind(KeyCode k)
 	{
-		transform.GetChild(2).gameObject.SetActive(true);
-		transform.GetChild(2).GetChild(1).GetComponent<Text>().text = k.ToString();
+		keybindDisplay.gameObject.SetActive(true);
+		keybindDisplay.GetChild(1).GetComponent<Text>().text = k.ToString();
+		binding = k;
 	}
 
 	public void SetNoBind()
 	{
-		transform.GetChild(2).gameObject.SetActive(false);
+		keybindDisplay.gameObject.SetActive(false);
+		binding = KeyCode.None;
 	}
 
 	public bool inPlay()
 	{
-		return activeSlot != null;
+		return occupyingSlot != null;
 	}
-
-	public void setDragging()
+	private void OccupySlot(MercSlot slot)
 	{
-		dragging = this;
-		child.SetParent(parentOfDrag);
+		occupyingSlot = slot;
+		slot.occupied = true;
+		transform.SetParent(slot.transform);
+		transform.localPosition = new Vector3(0,0,0);
 	}
-
-	public void stopDragging()
+	public void SetDragging()
 	{
-		PointerEventData ped = new PointerEventData(ScreenShift.system);
-		ped.position = Input.mousePosition;
-
-		List<RaycastResult> results = new List<RaycastResult>();
-
-		ScreenShift.raycaster.Raycast(ped, results);
-
-		foreach(RaycastResult r in results)
+		MercTrayMain.dragging = this;
+		transform.SetParent(MercTrayMain.parentOfDrag);
+	}
+	private bool tryOccupy(MercSlot target)
+	{
+		if(target != null && target.ally && !target.occupied)
 		{
-			MercSlot slot = r.gameObject.GetComponent<MercSlot>();
+			OccupySlot(MercTrayMain.hoveringSlot);
+			return true;
+		}
+		return false;
+	}
 
-			if(slot != null && slot.occupied == false && slot.ally == true)
-			{
-				activeSlot = slot;
-				slot.occupied = true;
-				child.SetParent(slot.transform);
-				child.localPosition = new Vector3(0,0,0);
-
-				return;
-			}
+	public void StopDragging()
+	{
+		if(tryOccupy(MercTrayMain.hoveringSlot))
+		{
+			OccupySlot(MercTrayMain.hoveringSlot);
+			return;
 		}
 
-		child.SetParent(transform);
-		child.SetSiblingIndex(1);
-		child.localPosition = new Vector3(0,0,0);
+		transform.SetParent(parent);
+		transform.SetSiblingIndex(1);
+		transform.localPosition = new Vector3(0,0,0);
 	}
 
-	public void updatePosition()
+	public void Trigger(MercSlot target)
 	{
-		child.position = Input.mousePosition;
+		if(occupyingSlot != null)
+		{
+			//Do active ability
+		}
+		else
+		{
+			tryOccupy(target);
+		}
+	}
+
+	public void updatePositionToMouse()
+	{
+		transform.position = Input.mousePosition;
+	}
+
+	public void Die()
+	{
+		//REMOVE KEYBINDING
 	}
 }

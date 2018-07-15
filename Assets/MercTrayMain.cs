@@ -1,23 +1,13 @@
 ﻿using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MercTrayMain : MonoBehaviour 
+public class MercTrayMain : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+	public static KeyCode overrideBinding = KeyCode.LeftShift;
 	public static MercTrayMain instance = null;
-
-	static KeyCode[] bindingArray = {
-									KeyCode.Alpha1, 
-									KeyCode.Alpha2, 
-									KeyCode.Alpha3, 
-									KeyCode.Alpha4, 
-									KeyCode.Alpha5, 
-									KeyCode.Alpha6, 
-									KeyCode.Alpha7, 
-									KeyCode.Alpha8,
-									KeyCode.Alpha9,
-									KeyCode.Alpha0
-									};
 	void Awake()
 	{
 		if(instance == null)
@@ -29,64 +19,84 @@ public class MercTrayMain : MonoBehaviour
 			Destroy(this);
 		}
 	}
+	public static MercTrayElement dragging = null;
+	public static MercSlot hoveringSlot = null;
+	public static MercTrayElement hoveringElement = null;
+	public static Transform parentOfDrag = null;
+	private GraphicRaycaster raycaster;
 	void Start()
 	{
-		MercTrayElement.parentOfDrag = transform.parent.parent;
-		UpdateKeyBinds();
+		parentOfDrag = transform.parent.parent;
+		raycaster = GetComponentInParent<GraphicRaycaster>();
 	}
-
-	int dragging = -1;
-
-	public void UpdateKeyBinds()
+	private void FindHovering<T>(out T variable, PointerEventData mouse)
 	{
-		int i;
-		for(i = 0; i < 10 && i < transform.childCount; ++i)
-		{
-			MercTrayElement child = transform.GetChild(i).GetComponent<MercTrayElement>();
-			if(child != null)
-			{
-				child.SetKeybind(bindingArray[i]);
-			}
-		}
+		List<RaycastResult> results = new List<RaycastResult>();
+		raycaster.Raycast(mouse, results);
 
-		for(; i < transform.childCount; ++i)
+		foreach(RaycastResult r in results)
 		{
-			MercTrayElement child = transform.GetChild(i).GetComponent<MercTrayElement>();
-			if(child != null)
+			if(r.gameObject.GetComponent<T>() != null)
 			{
-				child.SetNoBind();
+				variable = r.gameObject.GetComponent<T>();
+				return;
 			}
 		}
+		
+		variable = default(T);
 	}
 
 	// Update is called once per frame
 	void Update () 
 	{
-		//dragging mouse is set when setDragging is called
-		if(!MercTrayElement.draggingMouse)
-		{
-			if(MercTrayElement.dragging == null)
-			{
-				for(int i = 0; i < 10 && i < transform.childCount; ++i)
-				{
-					if(Input.GetKeyDown(bindingArray[i]))
-					{
-						MercTrayElement temp = transform.GetChild(i).GetComponent<MercTrayElement>();
-						if(temp != null && !temp.inPlay())
-						{
-							temp.setDragging();
-							temp.stopDragging();
-							MercTrayElement.dragging = null;
-						}
-					}
-				}
+		PointerEventData ped = new PointerEventData(EventSystem.current);
+		ped.position = Input.mousePosition;
+		FindHovering<MercSlot>(out hoveringSlot, ped);
+		FindHovering<MercTrayElement>(out hoveringElement, ped);
 
+		if(dragging != null)
+		{
+			dragging.updatePositionToMouse();
+		}
+
+		if(hoveringElement != null)
+		{
+			bool overrideBindingPressed = Input.GetKey(overrideBinding);
+			if(overrideBindingPressed)
+			{
+				KeyCode pressed = BindingHandler.getAnyPressed();
+				if(pressed != KeyCode.None)
+				{
+					BindingHandler.addBind(pressed, hoveringElement);
+				}
 			}
 		}
 
-		if(MercTrayElement.dragging != null)
+		if(hoveringSlot != null)
 		{
-			MercTrayElement.dragging.updatePosition();
+			foreach(MercTrayElement e in BindingHandler.getTriggeredElements())
+			{
+				e.Trigger(hoveringSlot);
+			}
 		}
 	}
+	
+	public void OnPointerDown(PointerEventData pointerEventData)
+    {
+		if(hoveringElement != null && pointerEventData.button == 0)
+		{
+			hoveringElement.SetDragging();
+			hoveringElement.updatePositionToMouse();
+		}
+    }
+
+	public void OnPointerUp(PointerEventData pointerEventData)
+    {
+        if(dragging != null && pointerEventData.button == 0)
+		{
+			dragging.StopDragging();
+			dragging = null;
+		}
+    }
 }
+

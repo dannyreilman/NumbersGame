@@ -7,6 +7,9 @@ using UnityEngine.Assertions;
 
 public class TransactionButton : Unlockable {
 
+	public static KeyCode upgradeKey = KeyCode.Q;
+	public static KeyCode buyKey = KeyCode.E;
+
 	//This initializes the hideininspector values below
 	public ButtonBehaviour behaviour;
 	
@@ -117,7 +120,7 @@ public class TransactionButton : Unlockable {
 
 		upgradeBehaviour = GetComponent<UpgradeBehaviour>();
 
-		transactionObj = new ButtonBase(parentCanvas, transactionButton, KeyCode.E, (RectTransform) transform);
+		transactionObj = new ButtonBase(parentCanvas, transactionButton, buyKey, (RectTransform) transform);
 		
 		if(upgradeBehaviour == null || upgradeBehaviour.Equals(null))
 		{
@@ -125,7 +128,7 @@ public class TransactionButton : Unlockable {
 		}
 		else
 		{
-			upgradeObj = new ButtonBase(parentCanvas, upgradeButton, KeyCode.Q, (RectTransform) transform);
+			upgradeObj = new ButtonBase(parentCanvas, upgradeButton, upgradeKey, (RectTransform) transform);
 		}
 		
 		if(upgradeObj != null)
@@ -164,7 +167,7 @@ public class TransactionButton : Unlockable {
 	}
 	void Update () 
 	{
-		if(Input.GetKeyUp(KeyCode.Q) && upgradeObj != null)
+		if(Input.GetKeyUp(upgradeKey) && upgradeObj != null)
 		{
 			upgradeCooldown = false;
 			StopCoroutine("UpgradeCoroutine");

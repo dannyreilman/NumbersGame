@@ -49,7 +49,7 @@ public class ResourceHandler : MonoBehaviour
 	{
 		representer.Represent(resource, true);
 
-		Plate.BUY_ONE_PLATE = Input.GetKeyDown(KeyCode.R);
+		Plate.BUY_ONE_PLATE = Input.GetKeyDown(Plate.buyKey);
 	}
 
 	public Color getColor(ResourceEnum toGet)

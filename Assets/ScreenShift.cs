@@ -5,12 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class ScreenShift : MonoBehaviour {
-
+	public static KeyCode shiftKey = KeyCode.Space;
 	public static GraphicRaycaster raycaster;
 	public static EventSystem system;
 	private float shiftAmt = 0.0f;
 	float speed = 10f;
-	
+	bool movingDown;
 	private RectTransform paneTransform;
 
 	float smoothstep(float t)
@@ -30,7 +30,12 @@ public class ScreenShift : MonoBehaviour {
 		paneTransform.anchorMin = new Vector2(paneTransform.anchorMin.x, 0.0f - smoothstep(shiftAmt));
 		paneTransform.anchorMax = new Vector2(paneTransform.anchorMax.x, 1.0f - smoothstep(shiftAmt));
 		
-		if(Input.GetKey(KeyCode.Space))
+		if(Input.GetKeyDown(shiftKey))
+		{
+			movingDown = !movingDown;
+		}
+		
+		if(movingDown)
 		{
 			shiftAmt = Mathf.Min(shiftAmt + speed * Time.deltaTime, 1);
 		}
