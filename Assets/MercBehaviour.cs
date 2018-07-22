@@ -7,9 +7,12 @@ using UnityEngine;
 public class MercBehaviour : ScriptableObject 
 {
 	public Mercenary[] levels;
-
-	public void Initialize(TransactionButton button)
+	public ResourceStruct upgradeCost;
+	public ResourceStruct buyCost;
+	public void Initialize(MercenaryButton button)
 	{
-		
+		button.buyCost = buyCost;
+		button.upgradeCost = upgradeCost;
+		button.icon.sprite = levels[0].sprite;
 	}
 }

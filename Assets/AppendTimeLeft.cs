@@ -6,23 +6,27 @@ using UnityEngine.Assertions;
 
 public class AppendTimeLeft : MonoBehaviour {
 	private Text textObj;
-	private string oldString;
 
 	void Awake()
 	{
 		textObj = GetComponent<Text>();
-		if(textObj == null || textObj.Equals(null))
-		{
-			Debug.Log("AppendTimeLeft requires a text object on the attached object");
-			Assert.AreNotEqual(textObj, null);
-		}
+	}
 
-		oldString  = textObj.text;
+	string GetString()
+	{
+		if(MarketManager.instance.inMarket)
+		{
+			return " seconds until market closes.";
+		}
+		else
+		{
+			return " seconds until market opens.";
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		textObj.text = (int)MarketManager.instance.timeLeft + oldString;
+		textObj.text = Mathf.CeilToInt(MarketManager.instance.timeLeft) + GetString();
 	}
 }

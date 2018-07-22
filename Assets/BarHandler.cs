@@ -16,15 +16,6 @@ public class BarHandler : MonoBehaviour
 	{
 		friendlyBar = transform.GetChild(0) as RectTransform;	
 		enemyBar = transform.GetChild(1) as RectTransform;
-		
-		//Set top line
-		(transform.GetChild(2) as RectTransform).anchorMin  = new Vector2(0f, MarketManager.LOCK_PERCENT);
-		(transform.GetChild(2) as RectTransform).anchorMax = new Vector2(1.0f, MarketManager.LOCK_PERCENT);
-
-		
-		//Set bottom line
-		(transform.GetChild(3) as RectTransform).anchorMin  = new Vector2(0f,  1 - MarketManager.LOCK_PERCENT);
-		(transform.GetChild(3) as RectTransform).anchorMax = new Vector2(1.0f,  1 - MarketManager.LOCK_PERCENT);
 	}
 
 	void Start()
@@ -35,7 +26,7 @@ public class BarHandler : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		float amount = ResourceHandler.instance.resource.GetResource(toHandle);
+		float amount = ResourceHandler.instance.allyResource.GetResource(toHandle);
 		if(amount + otherAmount < (MarketManager.LOCK_MIN/MarketManager.LOCK_PERCENT))
 		{
 			friendlyBar.anchorMax = new Vector2(1.0f, amount * MarketManager.LOCK_PERCENT / (float)MarketManager.LOCK_MIN);

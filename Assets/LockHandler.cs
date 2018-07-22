@@ -5,24 +5,17 @@ using UnityEngine;
 public class LockHandler : MonoBehaviour {
 	public static Dictionary<ResourceEnum, LockHandler> locks = new Dictionary<ResourceEnum, LockHandler>();
 	public ResourceEnum handling;
-	Animator lockAnim;
+	public Animator lockAnim;
 
 	// Use this for initialization
-	public void Handle ( ResourceEnum toHandle) {
+	public void Handle (ResourceEnum toHandle) {
 		handling = toHandle;	
 		GetComponentInChildren<BarHandler>().toHandle = handling;
+		foreach(MercSlot ms in GetComponentsInChildren<MercSlot>())
+		{
+			ms.row = handling;
+		}
 		locks[handling] = this;
-
-		lockAnim = GetComponentInChildren<Animator>();
-	}
-	
-	public void SetLock(bool lockVal)
-	{
-		lockAnim.SetBool("Lock", lockVal);
 	}
 
-	public void FinalizeLock()
-	{
-		MarketManager.instance.FinalizeLock(handling);
-	}
 }

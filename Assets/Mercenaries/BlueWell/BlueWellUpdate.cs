@@ -7,15 +7,14 @@ public class BlueWellUpdate : MercenaryCall
 	private float amountAccumulated = 0.0f;
 	
 	private ResourceStruct oneBlue = new ResourceStruct(0,0,1,0,0,0,0);
-	const float speed = 2.0f;
 
 	// Use this for initialization
-	public void Call () 
+	public void Call (float[] args) 
 	{
-		amountAccumulated += speed * Time.deltaTime;
+		amountAccumulated += args[0] * Time.deltaTime;
 		while(amountAccumulated > 1)
 		{
-			ResourceHandler.instance.resource += oneBlue;
+			ResourceHandler.instance.allyResource += oneBlue;
 			amountAccumulated -= 1;
 		}
 	}

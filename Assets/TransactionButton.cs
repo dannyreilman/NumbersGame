@@ -103,14 +103,7 @@ public class TransactionButton : Unlockable {
 		costRep = transform.GetChild(3).GetChild(0).GetComponent<RepresentStructHandler>();
 		rewardRep = transform.GetChild(3).GetChild(1).GetComponent<RepresentStructHandler>();
 
-		Transform t = transform;
-
-		while(t.GetComponent<Canvas>() == null)
-		{
-			t = t.parent;
-		}
-
-		parentCanvas = t.GetComponent<Canvas>();
+		parentCanvas = GetComponentInParent<Canvas>();
 	}
 
 	void Start()
@@ -160,10 +153,10 @@ public class TransactionButton : Unlockable {
 	{
 		if(upgradeObj != null)
 		{
-			upgradeObj.SetInteractable(ResourceHandler.instance.resource >= upgradeCost && upgradeable && !upgradeCooldown);
+			upgradeObj.SetInteractable(ResourceHandler.instance.allyResource >= upgradeCost && upgradeable && !upgradeCooldown);
 		}
 
-		transactionObj.SetInteractable(ResourceHandler.instance.resource >= cost && interactable && !running);
+		transactionObj.SetInteractable(ResourceHandler.instance.allyResource >= cost && interactable && !running);
 	}
 	void Update () 
 	{
@@ -214,7 +207,7 @@ public class TransactionButton : Unlockable {
 	
 	public void Upgrade()
 	{
-		ResourceHandler.instance.resource -= buyUpgradeCost;
+		ResourceHandler.instance.allyResource -= buyUpgradeCost;
 
 		UpdateInteractables();
 		if(level > 0)
@@ -245,7 +238,7 @@ public class TransactionButton : Unlockable {
 
 	public void DoTransaction()
 	{
-		ResourceHandler.instance.resource -= cost;
+		ResourceHandler.instance.allyResource -= cost;
 		UpdateInteractables();
 		interactable = false;
 		upgradeable = false;
@@ -294,7 +287,7 @@ public class TransactionButton : Unlockable {
 		if(level < maxLevel)
 			upgradeable = true;
 		
-		ResourceHandler.instance.resource += returnValue;
+		ResourceHandler.instance.allyResource += returnValue;
 		UpdateInteractables();
 		if(upgradeObj != null)
 			upgradeObj.Finish();

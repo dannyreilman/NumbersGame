@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 497969e92ea82514d927ba4de4352069, type: 3}
-  m_Name: BlueWellLv1
+  m_Name: BlueWellLv2
   m_EditorClassIdentifier: 
   attack: 0
   attackSpeed: 0
-  health: 5
+  health: 10
   sprite: {fileID: 21300000, guid: b8fb3a9e2e68fcc42aff7a5aa472816b, type: 3}
   onAttack:
     _classRef: 
@@ -24,4 +24,4 @@ MonoBehaviour:
   onUpdate:
     _classRef: BlueWellUpdate, Assembly-CSharp
   onUpdateArgs:
-  - 2
+  - 5

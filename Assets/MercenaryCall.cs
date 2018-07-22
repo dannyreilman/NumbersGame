@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface MercenaryCall  
 {
-	void Call ();
+	void Call (float[] args);
 }

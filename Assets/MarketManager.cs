@@ -7,11 +7,34 @@ public class MarketManager : MonoBehaviour
 {
 	public static int LOCK_MIN = 10;
 	public static float LOCK_PERCENT = 0.75f;
+	public static float timeOutOfMarket = 0.0f;
+	public static float timeInMarket = 30.0f;
 	public static MarketManager instance;
-
 	public float timeLeft;
-	
-	bool inMarket = false;
+	public bool inMarket = false;
+	public int[] locks = new int[ResourceStruct.resourceCount];
+	public ResourceStruct GetAllyLockFactor()
+	{
+		ResourceStruct toReturn = new ResourceStruct((locks[0]==-1)?0:1,
+								  (locks[1]==-1)?0:1,
+								  (locks[2]==-1)?0:1,
+								  (locks[3]==-1)?0:1,
+								  (locks[4]==-1)?0:1,
+								  (locks[5]==-1)?0:1,
+								  (locks[6]==-1)?0:1);
+		Debug.Log(toReturn);
+		return toReturn;
+	}
+	public ResourceStruct GetEnemyLockFactor()
+	{
+		return new ResourceStruct((locks[0]==1)?0:1,
+								  (locks[1]==1)?0:1,
+								  (locks[2]==1)?0:1,
+								  (locks[3]==1)?0:1,
+								  (locks[4]==1)?0:1,
+								  (locks[5]==1)?0:1,
+								  (locks[6]==1)?0:1);
+	}
 
 	// Use this for initialization
 	void Awake () 
@@ -19,37 +42,42 @@ public class MarketManager : MonoBehaviour
 		Assert.IsNull(instance);
 		instance = this;
 
-		timeLeft = 10.0f;
+		timeLeft = timeOutOfMarket;
+		UnSetLocks();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if(inMarket)
+		timeLeft -= Time.deltaTime;
+		if(timeLeft <= 0)
 		{
-			for(int i = 1; i < ResourceStruct.resourceCount; ++i)
+			inMarket = !inMarket;
+			transform.GetChild(0).gameObject.SetActive(!inMarket);
+			if(inMarket)
 			{
-				ResourceEnum e = (ResourceEnum) i;
-
-				int val = ResourceHandler.instance.resource.GetResource(e);
-				int otherVal = ResourceHandler.instance.enemyResource.GetResource(e);
-
-				LockHandler.locks[e].SetLock(val >= LOCK_MIN && val / (val + otherVal) >= LOCK_PERCENT);
+				UnSetLocks();
+				timeLeft = timeInMarket;
 			}
-		}
-		else
-		{
-			timeLeft -= Time.deltaTime;
-			if(timeLeft <= 0)
+			else
 			{
-				timeLeft = 0;
-				inMarket = true;
+				timeLeft = timeOutOfMarket;
 			}
 		}		
 	}
 
-	public void FinalizeLock(ResourceEnum toFinalize)
+	public void UnSetLocks()
 	{
-		Debug.Log(toFinalize);
+		for(int i = 0; i < ResourceStruct.resourceCount; ++i)
+		{
+			locks[i] = 0;
+		}
+	}
+
+	public void Lock(ResourceEnum toLock, bool side)
+	{
+		locks[(int)toLock] = side ? 1:-1;
+		Debug.Log(side);
+		LockHandler.locks[toLock].lockAnim.SetTrigger("go");
 	}
 }

@@ -8,49 +8,23 @@ public class MercTrayElement : MonoBehaviour
 {
 	public Mercenary behaviour;
 	public KeyCode binding = KeyCode.None;
-	
 	Transform parent;
 	MercSlot occupyingSlot = null;
-
-	NumberPanel healthPanel;
-	NumberPanel attackPanel;
-	NumberPanel speedPanel;
 	Transform keybindDisplay;
-	private float attackProgress = 0.0f;
+
+	public int count = 1;
 	void Start()
 	{
 		behaviour.Initialize();
+		behaviour.home = this;
+		GetComponent<MercenaryRepresenter>().SetBehaviour(behaviour);
 		parent = transform.parent;
-		healthPanel = transform.GetChild(0).GetComponent<NumberPanel>();
-		attackPanel = transform.GetChild(1).GetComponent<NumberPanel>();
-		speedPanel = transform.GetChild(2).GetComponent<NumberPanel>();
 		keybindDisplay = parent.GetChild(2);
 	}
 
 	// Update is called once per frame
 	void Update () 
 	{
-		healthPanel.displayNum = behaviour.health;
-		attackPanel.displayNum = behaviour.attack;
-		speedPanel.displayNum = behaviour.attackSpeed;
-
-		if(occupyingSlot != null)
-		{
-			//In battlefield state
-			behaviour.Update();
-			attackProgress += behaviour.attackSpeed * Time.deltaTime;
-
-			while(attackProgress > 1)
-			{
-				occupyingSlot.doAttack(behaviour.attack);
-				attackProgress -= 1;
-			}
-
-			if(behaviour.health <= 0)
-			{
-				Die();
-			}
-		}
 	}
 
 	public void SetKeybind(KeyCode k)
@@ -70,21 +44,30 @@ public class MercTrayElement : MonoBehaviour
 	{
 		return occupyingSlot != null;
 	}
+	private IEnumerator Deploy()
+	{
+		yield return new WaitForSeconds(0.1f);
+		occupyingSlot.attackProgress = 1;
+	}
 	private void OccupySlot(MercSlot slot)
 	{
 		occupyingSlot = slot;
-		slot.occupied = true;
+		slot.occupying = behaviour;
 		transform.SetParent(slot.transform);
 		transform.localPosition = new Vector3(0,0,0);
+		//Negative so that it has to deploy before attacking
+		
+		occupyingSlot.attackProgress = -1000.0f;
+		StartCoroutine(Deploy());
 	}
 	public void SetDragging()
 	{
 		MercTrayMain.dragging = this;
 		transform.SetParent(MercTrayMain.parentOfDrag);
 	}
-	private bool tryOccupy(MercSlot target)
+	public bool tryOccupy(MercSlot target)
 	{
-		if(target != null && target.ally && !target.occupied)
+		if(target != null && target.ally && !target.occupied && MarketManager.instance.inMarket)
 		{
 			OccupySlot(MercTrayMain.hoveringSlot);
 			return true;
@@ -96,13 +79,10 @@ public class MercTrayElement : MonoBehaviour
 	{
 		if(tryOccupy(MercTrayMain.hoveringSlot))
 		{
-			OccupySlot(MercTrayMain.hoveringSlot);
 			return;
 		}
 
-		transform.SetParent(parent);
-		transform.SetSiblingIndex(1);
-		transform.localPosition = new Vector3(0,0,0);
+		ReturnToHand();
 	}
 
 	public void Trigger(MercSlot target)
@@ -122,8 +102,36 @@ public class MercTrayElement : MonoBehaviour
 		transform.position = Input.mousePosition;
 	}
 
+	public void TakeDamage(int damage)
+	{
+		behaviour.TakeDamage(damage);
+	}
 	public void Die()
 	{
-		//REMOVE KEYBINDING
+		BindingHandler.removeBind(binding);
+		Destroy(parent.gameObject);
+	}
+
+	public void ReturnToHand()
+	{
+		if(occupyingSlot != null)
+		{
+			occupyingSlot.occupying = null;
+			occupyingSlot = null;
+		}
+		
+		transform.SetParent(parent);
+		transform.SetSiblingIndex(1);
+		transform.localPosition = new Vector3(0,0,0);
+	}
+
+	public void UpdateBehaviour(Mercenary merc)
+	{
+		if(!inPlay())
+		{
+			behaviour = merc.Copy();
+			behaviour.Initialize();
+			GetComponent<MercenaryRepresenter>().SetBehaviour(behaviour);
+		}
 	}
 }

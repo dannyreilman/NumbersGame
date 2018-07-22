@@ -34,7 +34,7 @@ public class Plate : Unlockable {
 	{
 		if(!locked && !bought)
 		{
-			buyButton.GetComponent<Button>().enabled = ResourceHandler.instance.resource >= unlockCost;
+			buyButton.GetComponent<Button>().enabled = ResourceHandler.instance.allyResource >= unlockCost;
 
 			if(BUY_ONE_PLATE)
 			{
@@ -68,9 +68,9 @@ public class Plate : Unlockable {
 
 	public void BuyPlate()
 	{
-		if(ResourceHandler.instance.resource >= unlockCost)
+		if(ResourceHandler.instance.allyResource >= unlockCost)
 		{
-			ResourceHandler.instance.resource -= unlockCost;
+			ResourceHandler.instance.allyResource -= unlockCost;
 			GetComponent<Image>().color = boughtColor;
 			bought = true;
 			foreach(Transform children in transform)

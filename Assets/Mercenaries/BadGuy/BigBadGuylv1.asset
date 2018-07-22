@@ -9,12 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 497969e92ea82514d927ba4de4352069, type: 3}
-  m_Name: BlueWellLv1
+  m_Name: BigBadGuylv1
   m_EditorClassIdentifier: 
-  attack: 0
-  attackSpeed: 0
+  attack: 5
+  attackSpeed: 1
   health: 5
-  sprite: {fileID: 21300000, guid: b8fb3a9e2e68fcc42aff7a5aa472816b, type: 3}
+  sprite: {fileID: 21300000, guid: 0f37b458de7f3544da911967bf6b1213, type: 3}
   onAttack:
     _classRef: 
   onAttackArgs: []
@@ -22,6 +22,5 @@ MonoBehaviour:
     _classRef: 
   onTakeDamageArgs: []
   onUpdate:
-    _classRef: BlueWellUpdate, Assembly-CSharp
-  onUpdateArgs:
-  - 2
+    _classRef: 
+  onUpdateArgs: []

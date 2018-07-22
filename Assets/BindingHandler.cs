@@ -39,6 +39,14 @@ public class BindingHandler : MonoBehaviour
 		bindings[key] = element;
 		element.SetKeybind(key);
 	}
+
+	public static void removeBind(KeyCode key)
+	{
+		if(bindings.ContainsKey(key) && bindings[key] != null)
+		{
+			bindings.Remove(key);
+		}
+	}
 	public static bool validKey(KeyCode toCheck)
 	{
 		foreach(KeyCode code in reserved)

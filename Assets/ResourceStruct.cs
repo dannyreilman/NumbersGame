@@ -11,18 +11,41 @@ public enum ResourceEnum
 	money, red, blue, green, yellow, black, white
 }
 
+
 [System.Serializable]
 public class ResourceStruct 
 {
+	public static ResourceStruct GetOne(ResourceEnum e)
+	{
+		ResourceStruct toReturn = ResourceStruct.zero.Copy();
+		toReturn.SetResource(e, 1);
+		return toReturn;
+	}
+
 	public const int resourceCount = 7;
 
 	[NamedArray(typeof(ResourceEnum))] 
 	public int[] resourceArray = new int[resourceCount];
-
 	public int GetResource(ResourceEnum e)
 	{
 		return resourceArray[(int)e];
 	}
+	public ResourceStruct Copy()
+	{
+		return new ResourceStruct(resourceArray[0],
+								  resourceArray[1],
+								  resourceArray[2],
+								  resourceArray[3],
+								  resourceArray[4],
+								  resourceArray[5],
+								  resourceArray[6]);
+	}
+
+	public void SetResource(ResourceEnum e, int value)
+	{
+		resourceArray[(int)e] = value;
+	}
+
 
 	public ResourceStruct(int money, int red, int blue, int green, int yellow, int black, int white)
 	{
@@ -147,4 +170,6 @@ public class ResourceStruct
 
 		return ratio;
 	}
+
+	public static ResourceStruct zero = new ResourceStruct(0,0,0,0,0,0,0);
 }

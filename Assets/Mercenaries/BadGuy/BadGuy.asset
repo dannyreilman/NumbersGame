@@ -9,7 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89fdff73463da7444a4a2097c7ade9db, type: 3}
-  m_Name: BlueWellFull
+  m_Name: BadGuy
   m_EditorClassIdentifier: 
-  levels:
-  - {fileID: 11400000, guid: 51f443c149ad9774b89583d9b6aaa089, type: 2}
+  levels: []
+  upgradeCost:
+    resourceArray: 00000000000000000000000000000000000000000000000000000000
+  buyCost:
+    resourceArray: 00000000000000000000000000000000000000000000000000000000
+  icon: {fileID: 0}

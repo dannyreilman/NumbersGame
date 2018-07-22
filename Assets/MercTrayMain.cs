@@ -24,6 +24,7 @@ public class MercTrayMain : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 	public static MercTrayElement hoveringElement = null;
 	public static Transform parentOfDrag = null;
 	private GraphicRaycaster raycaster;
+	public GameObject mercTrayElementPrefab;
 	void Start()
 	{
 		parentOfDrag = transform.parent.parent;
@@ -98,5 +99,16 @@ public class MercTrayMain : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 			dragging = null;
 		}
     }
+
+	public MercTrayElement AddMercTrayElement(Mercenary toAdd)
+	{
+		GameObject summoned = GameObject.Instantiate(mercTrayElementPrefab, 
+							   						 Vector3.zero,
+							   						 Quaternion.identity, 
+							   						 transform);
+		MercTrayElement elem = summoned.GetComponentInChildren<MercTrayElement>();
+		elem.behaviour = toAdd.Copy();
+		return elem;
+	}
 }
 

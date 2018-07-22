@@ -58,7 +58,7 @@ public class ButtonBase
 		if(interactable)
 			press();
 	}	
-	bool Hovering()
+	public bool Hovering()
 	{
 		Vector2 mouseLoc = Input.mousePosition;
 		return RectTransformUtility.RectangleContainsScreenPoint(rectTrans, mouseLoc);
