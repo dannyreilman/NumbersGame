@@ -7,7 +7,7 @@ public class MarketManager : MonoBehaviour
 {
 	public static int LOCK_MIN = 10;
 	public static float LOCK_PERCENT = 0.75f;
-	public static float timeOutOfMarket = 0.0f;
+	public static float timeOutOfMarket = 15.0f;
 	public static float timeInMarket = 30.0f;
 	public static MarketManager instance;
 	public float timeLeft;

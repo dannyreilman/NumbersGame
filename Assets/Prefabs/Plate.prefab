@@ -759,30 +759,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3072dddba4adfc544bde795d9e7a9900, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  behaviour: {fileID: 0}
   cost:
-    money: 0
-    red: 0
-    blue: 0
+    resourceArray: 00000000000000000000000000000000000000000000000000000000
   returnValue:
-    money: 1
-    red: 0
-    blue: 0
-  upgradeAmt:
-    money: 1
-    red: 0
-    blue: 0
-  maxLevel: 2
+    resourceArray: 00000000000000000000000000000000000000000000000000000000
+  buyCost:
+    resourceArray: 00000000000000000000000000000000000000000000000000000000
   upgradeCost:
-    money: 5
-    red: 0
-    blue: 0
+    resourceArray: 00000000000000000000000000000000000000000000000000000000
+  maxLevel: 2
+  level: 0
   delay: 3
-  obj: {fileID: 114261394359296578}
-  upgradeObj: {fileID: 114076137688546272}
-  levelCounter: {fileID: 114844947611800172}
-  bar: {fileID: 114114121516333740}
-  locked: 0
-  lockedObj: {fileID: 1000522007096746}
 --- !u!114 &114620522688532638
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -822,9 +810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unlockCost:
-    money: 300
-    red: 0
-    blue: 0
+    resourceArray: 00000000000000000000000000000000000000000000000000000000
   boughtColor: {r: 0, g: 0.8758622, b: 1, a: 1}
   locked: 0
 --- !u!114 &114779663506874830

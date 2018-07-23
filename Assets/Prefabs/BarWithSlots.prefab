@@ -373,6 +373,7 @@ MonoBehaviour:
   occupying: {fileID: 0}
   ally: 1
   floatText: {fileID: 1784723708642272, guid: f54f681f21edc3844bd3fd69a1a01ea6, type: 2}
+  attackProgress: 0
 --- !u!114 &114669530576793544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -511,6 +512,7 @@ MonoBehaviour:
   occupying: {fileID: 0}
   ally: 0
   floatText: {fileID: 1784723708642272, guid: f54f681f21edc3844bd3fd69a1a01ea6, type: 2}
+  attackProgress: 0
 --- !u!114 &114989738621986140
 MonoBehaviour:
   m_ObjectHideFlags: 1

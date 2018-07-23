@@ -22,6 +22,11 @@ public class Plate : Unlockable {
 	void Awake()
 	{
 		rectTrans = GetComponent<RectTransform>();
+		foreach(Transform children in transform)
+		{
+			if(children.GetComponent<Unlockable>() != null)
+				children.GetComponent<Unlockable>().Lock();
+		}
 	}
 
 	void Start()
