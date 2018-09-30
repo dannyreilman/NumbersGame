@@ -22,7 +22,6 @@ public class MarketManager : MonoBehaviour
 								  (locks[4]==-1)?0:1,
 								  (locks[5]==-1)?0:1,
 								  (locks[6]==-1)?0:1);
-		Debug.Log(toReturn);
 		return toReturn;
 	}
 	public ResourceStruct GetEnemyLockFactor()
@@ -77,7 +76,6 @@ public class MarketManager : MonoBehaviour
 	public void Lock(ResourceEnum toLock, bool side)
 	{
 		locks[(int)toLock] = side ? 1:-1;
-		Debug.Log(side);
 		LockHandler.locks[toLock].lockAnim.SetTrigger("go");
 	}
 }
