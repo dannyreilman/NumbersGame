@@ -25,19 +25,7 @@ public class ResourceHandler : MonoBehaviour
 		}
 		set
 		{
-			resource_internal = value * MarketManager.instance.GetAllyLockFactor();
-		}
-	}
-	private ResourceStruct enemyResource_internal = new ResourceStruct();
-	public ResourceStruct enemyResource
-	{
-		get
-		{
-			return enemyResource_internal;
-		}
-		set
-		{
-			enemyResource_internal = value * MarketManager.instance.GetEnemyLockFactor();
+			resource_internal = value;
 		}
 	}
 
@@ -45,13 +33,12 @@ public class ResourceHandler : MonoBehaviour
 	public int ambientMoney;
 	public float ambientPeriod;
 
-	private static ResourceStruct onedollar = ResourceStruct.GetOne(ResourceEnum.money);
+	private static ResourceStruct ambient = new ResourceStruct(1,1,1,1,1,1,1);
 
 	public RepresentStructHandler representer;
 
 	// Use this for initialization
 	void Awake () {
-		DontDestroyOnLoad(gameObject);
 
 		representer = GetComponentInChildren<RepresentStructHandler>();
 
@@ -100,7 +87,7 @@ public class ResourceHandler : MonoBehaviour
 		while(true)
 		{
 			yield return new WaitForSeconds(ambientPeriod);
-			allyResource += onedollar * ambientMoney;
+			allyResource += ambient * ambientMoney;
 		}
 	}
 }

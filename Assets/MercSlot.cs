@@ -8,7 +8,6 @@ public class MercSlot : MonoBehaviour
 
 	public static Dictionary<ResourceEnum, MercSlot> enemySlots = new Dictionary<ResourceEnum, MercSlot>();
 	const int DIRECT_FACTOR = 5;
-	const int LOCK_FACTOR = 2;
 	public bool general;
 	public MercSlot opposite;
 	[HideInInspector]	
@@ -57,39 +56,30 @@ public class MercSlot : MonoBehaviour
 	{
 		if(occupying != null)
 		{
-			occupying.Update();
-
-			attackProgress += occupying.attackSpeed * Time.deltaTime;
-
-			while(attackProgress > 1)
+			if(!ally && !MarketManager.instance.inWave)
 			{
-				doAttack(occupying.attack);
-				occupying.Attack();
-				attackProgress -= 1;
-			}
-			
-			if(occupying.health <= 0)
-			{
-				if(occupying.home != null)
-				{
-					occupying.home.Die();
-				}
-
-				occupying.Die();
+				Destroy(transform.GetChild(0).gameObject);
+				Destroy(occupying);
 				occupying = null;
 			}
-
-			if(!MarketManager.instance.inMarket)
+			else
 			{
-				if(occupying.home == null)
+				occupying.Update();
+
+				attackProgress += occupying.attackSpeed * Time.deltaTime;
+
+				while(attackProgress > 1)
+				{
+					doAttack(occupying.attack);
+					occupying.Attack();
+					attackProgress -= 1;
+				}
+				
+				if(occupying.health <= 0)
 				{
 					occupying.Die();
+					occupying = null;
 				}
-				else
-				{
-					occupying.home.ReturnToHand();
-				}
-				occupying = null;
 			}
 		}
 	}
@@ -117,43 +107,20 @@ public class MercSlot : MonoBehaviour
 		{
 			opposite.occupying.TakeDamage(attack);
 		}
+		else if(ally)
+		{
+			//Fail to attack if no opposite enemy
+			return false;
+		}
 		else
 		{
-			int allyAmt = ResourceHandler.instance.allyResource.GetResource(row);
-			int enemyAmt = ResourceHandler.instance.enemyResource.GetResource(row);
-			if(MarketManager.instance.locks[(int)row] == (ally ? 1 : -1))
-			{
-				int strength = LOCK_FACTOR * occupying.attack;
-				if(ally)
-				{
-					ResourceHandler.instance.allyResource += ResourceStruct.GetOne(row) * strength;
-				}
-				else
-				{
-					ResourceHandler.instance.enemyResource += ResourceStruct.GetOne(row) * strength;
-				}
-				emitText("+" + strength);
-			}
-			else 
-			{
-				if((ally ? enemyAmt : allyAmt) <= 0)
-				{
-					MarketManager.instance.Lock(row, ally);
-				}
-				else
-				{
-					int strength = DIRECT_FACTOR * occupying.attack;
-					if(ally)
-					{
-						ResourceHandler.instance.enemyResource -= ResourceStruct.GetOne(row) * strength;
-					}
-					else
-					{
-						ResourceHandler.instance.allyResource -= ResourceStruct.GetOne(row) * strength;
-					}
-					opposite.emitText("-" + strength);
-				}
-			}
+			int amount = ResourceHandler.instance.allyResource.GetResource(row);
+			int strength = DIRECT_FACTOR * occupying.attack;
+			int resourceLost = Mathf.Min(amount, strength);
+			ResourceHandler.instance.allyResource -= ResourceStruct.GetOne(row) * resourceLost;
+			ResourceHandler.instance.allyResource -= ResourceStruct.GetOne(ResourceEnum.money) * (strength - resourceLost);
+
+			opposite.emitText("-" + strength);
 		}
 		return true;
 

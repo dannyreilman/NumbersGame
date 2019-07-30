@@ -10,7 +10,7 @@ public class LockHandler : MonoBehaviour {
 	// Use this for initialization
 	public void Handle (ResourceEnum toHandle) {
 		handling = toHandle;	
-		GetComponentInChildren<BarHandler>().toHandle = handling;
+		GetComponentInChildren<BarHandler>().Handle(handling);
 		foreach(MercSlot ms in GetComponentsInChildren<MercSlot>())
 		{
 			ms.row = handling;

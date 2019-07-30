@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a12c0279a438b24419fded4af3fe4832, type: 3}
+  m_Name: BadGuySpawn
+  m_EditorClassIdentifier: 
+  merc: {fileID: 11400000, guid: 48e09a4e7741fe348a64fa2233e512d5, type: 2}
+  cost: 10
+  atkScaling: 0
+  hlthScaling: 4
+  spdScaling: 4
+  costScaling: 10

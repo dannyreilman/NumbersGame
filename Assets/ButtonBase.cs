@@ -10,7 +10,10 @@ public class ButtonBase
 {
 	public Button button = null;
 	public KeyCode code = KeyCode.None;
+	public KeyCode repeatCode = KeyCode.None;
 	public bool holdRepeat = false;
+	public bool shiftRepeat = false;
+
 	private Canvas parentCanvas = null;
 	private RectTransform rectTrans = null;
 
@@ -18,13 +21,16 @@ public class ButtonBase
 	public VoidDelegate press;
 
 	private bool interactable = true;
+	private bool shiftRepeating = false;
 
 	//Public Interface
-	public ButtonBase(Canvas parentCanvas, Button button, KeyCode code, RectTransform rectTrans, bool holdRepeat = true)
+	public ButtonBase(Canvas parentCanvas, Button button, KeyCode code, RectTransform rectTrans, bool holdRepeat = false, bool shiftRepeat = true, KeyCode repeatCode = KeyCode.LeftShift)
 	{
 		this.button = button;
 		this.code = code;
+		this.repeatCode = repeatCode;
 		this.holdRepeat = holdRepeat;
+		this.shiftRepeat = shiftRepeat;
 		this.parentCanvas = parentCanvas;
 		this.rectTrans = rectTrans;
 
@@ -37,19 +43,26 @@ public class ButtonBase
 		{
 			TryPress();
 		}
+		else if(shiftRepeat && shiftRepeating)
+		{
+			TryPress();
+		}
 	}
 	
 	public void SetInteractable(bool interactable)
 	{
 		button.interactable = interactable;
 		this.interactable = interactable;
-
 	}
 
 	public void Update () 
 	{
 		if(Hovering() && Input.GetKeyDown(code))
+		{
+			if(shiftRepeat && Input.GetKey(repeatCode))
+				shiftRepeating = !shiftRepeating;
 			TryPress();
+		}
 	}
 	//End Public Interface
 

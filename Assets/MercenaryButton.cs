@@ -3,43 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MercenaryButton : MonoBehaviour {
-
-	public static float DEATH_FACTOR = 2.0f;
+public class MercenaryButton : Unlockable
+{
 	public MercBehaviour behaviour;
 	[HideInInspector]
 	public ResourceStruct upgradeCost;
-	[HideInInspector]
-	public ResourceStruct buyCost;
 	[HideInInspector]
 	public int maxCount = 1;
 	[HideInInspector]
 	public Image icon;
 
 	private Button upgradeButton;
-	private Button buyButton;
 	private ButtonBase upgradeObj = null;
-	private ButtonBase buyObj = null;
 	private Canvas parentCanvas;
 	private RepresentStructHandler upgradeRep;
-	private RepresentStructHandler buyRep;
-	private int level = 1;
+	private int level = 0;
 	private Text levelCounter;
 
 	[HideInInspector]
 	public MercTrayElement trayElement = null;
-	
+
+	bool locked = false;
+
+	public List<float> respawnTimes = new List<float>();
+	public override void Unlock()
+	{
+		locked = false;
+	}
+
+	public override void Lock()
+	{
+		locked = true;
+	}
+
 	void Awake()
 	{
 		levelCounter = transform.GetChild(4).GetComponentInChildren<Text>();
 		levelCounter.text = level.ToString();
 
-		upgradeButton = transform.GetChild(2).GetChild(0).GetComponent<Button>();
-		buyButton = transform.GetChild(2).GetChild(1).GetComponent<Button>();
+		upgradeButton = transform.GetChild(2).GetComponent<Button>();
 		parentCanvas = GetComponentInParent<Canvas>();
 
 		upgradeRep = transform.GetChild(1).GetChild(0).GetComponent<RepresentStructHandler>();
-		buyRep = transform.GetChild(1).GetChild(1).GetComponent<RepresentStructHandler>();
 
 		icon = transform.GetChild(0).GetChild(0).GetComponent<Image>();
 	}
@@ -49,18 +54,14 @@ public class MercenaryButton : MonoBehaviour {
 		behaviour.Initialize(this);
 		
 		upgradeRep.Represent(upgradeCost);
-		buyRep.Represent(buyCost);
 
 		upgradeObj = new ButtonBase(parentCanvas, upgradeButton, TransactionButton.upgradeKey, (RectTransform) transform, false);
 		upgradeObj.press += Upgrade;
-		buyObj = new ButtonBase(parentCanvas, buyButton, TransactionButton.buyKey, (RectTransform) transform, false);
-		buyObj.press += Buy;
 	}
 
 	private void UpdateInteractables()
 	{
-		upgradeObj.SetInteractable(ResourceHandler.instance.allyResource >= upgradeCost && level < behaviour.levels.Length);
-		buyObj.SetInteractable(ResourceHandler.instance.allyResource >= buyCost && (trayElement == null || trayElement.Equals(null) || trayElement.count < maxCount));
+		upgradeObj.SetInteractable(ResourceHandler.instance.allyResource >= upgradeCost && level < behaviour.levels.Length && !locked);
 	}
 
 	void Upgrade()
@@ -68,38 +69,53 @@ public class MercenaryButton : MonoBehaviour {
 		ResourceHandler.instance.allyResource -= upgradeCost;
 		++level;
 
-		if(!(trayElement == null || trayElement.Equals(null)))
-		{
-			trayElement.UpdateBehaviour(behaviour.levels[level-1]);
-		}
-
-		levelCounter.text = level.ToString();
-		upgradeRep.Represent(upgradeCost);
-		buyRep.Represent(buyCost);
-		UpdateInteractables();
-	}
-
-	void Buy()
-	{
-		ResourceHandler.instance.allyResource -= buyCost;
 		if(trayElement == null || trayElement.Equals(null))
 		{
 			trayElement = MercTrayMain.instance.AddMercTrayElement(behaviour.levels[level-1]);
+			trayElement.assignedButton = this;
+			trayElement.count = maxCount;
 		}
-		else
-		{
-			++trayElement.count;
-		}
+		trayElement.UpdateBehaviour(behaviour.levels[level-1]);
 
+		levelCounter.text = level.ToString();
 		upgradeRep.Represent(upgradeCost);
-		buyRep.Represent(buyCost);
 		UpdateInteractables();
 	}
 
+	public void Respawn()
+	{
+		respawnTimes.Add(behaviour.levels[level-1].respawnTime);
+	}
+
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		UpdateInteractables();
 		upgradeObj.Update();
-		buyObj.Update();
+		for(int i = respawnTimes.Count - 1; i >= 0; --i)
+		{
+			respawnTimes[i] -= Time.deltaTime;
+			if(respawnTimes[i] < 0)
+			{
+				respawnTimes.RemoveAt(i);
+				++trayElement.count;
+			}
+		}	
+	}
+
+	public float GetRespawnPercent()
+	{
+		if(respawnTimes.Count == 0)
+			return -1.0f;
+
+		float minTime = float.MaxValue;
+		foreach (float timeLeft in respawnTimes)
+		{
+			if (timeLeft/behaviour.levels[level-1].respawnTime < minTime)
+			{
+				minTime = timeLeft/behaviour.levels[level-1].respawnTime;
+			}
+		}
+		return Mathf.Max(0.0f, 1 - minTime);
 	}
 }

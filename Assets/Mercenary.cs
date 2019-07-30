@@ -10,6 +10,7 @@ public class Mercenary : ScriptableObject
 	public int attack;
 	public float attackSpeed;
 	public int health;
+	public float respawnTime;
 	public Sprite sprite;
 
     [ClassImplements(typeof(MercenaryCall))]
@@ -27,8 +28,7 @@ public class Mercenary : ScriptableObject
 	private MercenaryCall onUpdateObj = null;
 	public float[] onUpdateArgs;
 
-	[HideInInspector]
-	public MercTrayElement home = null;
+	public DeployedMerc home = null;
 
 	[HideInInspector]
 	public MercenaryRepresenter rep = null;
@@ -69,11 +69,15 @@ public class Mercenary : ScriptableObject
 		{
 			rep.Die();
 		}
+		if(home != null)
+		{
+			home.Die();
+		}
 	}
 
 	public Mercenary Copy()
 	{
-		Mercenary toReturn = new Mercenary();
+		Mercenary toReturn = (Mercenary)ScriptableObject.CreateInstance("Mercenary");
 
 		toReturn.attack = attack;
 		toReturn.attackSpeed = attackSpeed;

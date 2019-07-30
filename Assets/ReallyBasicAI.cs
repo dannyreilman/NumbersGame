@@ -47,7 +47,7 @@ public class ReallyBasicAI : MonoBehaviour {
 		while(true)
 		{
 			yield return new WaitForSeconds(basicDelay);
-			while(!MarketManager.instance.inMarket)
+			while(!MarketManager.instance.inWave)
 			{
 				yield return new WaitForSeconds(0.01f);
 			}
@@ -60,7 +60,7 @@ public class ReallyBasicAI : MonoBehaviour {
 		while(true)
 		{
 			yield return new WaitForSeconds(strongDelay);
-			while(!MarketManager.instance.inMarket)
+			while(!MarketManager.instance.inWave)
 			{
 				yield return new WaitForSeconds(0.01f);
 			}

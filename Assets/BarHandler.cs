@@ -5,17 +5,25 @@ using UnityEngine.UI;
 
 public class BarHandler : MonoBehaviour 
 {
-	[HideInInspector]
-	public ResourceEnum toHandle;
-	public float otherAmount = 0.0f;
+	static int maxAmount = -1;
+	ResourceEnum toHandle;
 	
 	private RectTransform friendlyBar;
-	private RectTransform enemyBar;
+
+	public MercSlot enemy;
+	public MercSlot ally;
+
+
+	public void Handle(ResourceEnum toHandle_in)
+	{
+		toHandle = toHandle_in;
+		ally.row = toHandle;
+		enemy.row = toHandle;
+	}
 
 	void Awake()
 	{
 		friendlyBar = transform.GetChild(0) as RectTransform;	
-		enemyBar = transform.GetChild(1) as RectTransform;
 	}
 
 	void Start()
@@ -26,16 +34,21 @@ public class BarHandler : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		if(maxAmount < 0)
+		{
+			for(int i = 1; i < ResourceStruct.resourceCount; ++i)
+			{
+				int foundResource = ResourceHandler.instance.allyResource.resourceArray[i];
+				if(maxAmount < foundResource)
+					maxAmount = foundResource;
+			}
+		}
 		float amount = ResourceHandler.instance.allyResource.GetResource(toHandle);
-		if(amount + otherAmount < (MarketManager.LOCK_MIN/MarketManager.LOCK_PERCENT))
-		{
-			friendlyBar.anchorMax = new Vector2(1.0f, amount * MarketManager.LOCK_PERCENT / (float)MarketManager.LOCK_MIN);
-			enemyBar.anchorMin = new Vector2(0f, 1 - (otherAmount / (float)MarketManager.LOCK_MIN));
-		}
-		else
-		{
-			friendlyBar.anchorMax = new Vector2(1.0f, amount / (amount + otherAmount));
-			enemyBar.anchorMin = new Vector2(0f, 1 - (otherAmount / (amount + otherAmount)));
-		}
+		friendlyBar.anchorMax = new Vector2(1.0f, amount / maxAmount);
+	}
+
+	void LateUpdate()
+	{
+		maxAmount = -1;
 	}
 }

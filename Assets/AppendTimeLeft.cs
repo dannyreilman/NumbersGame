@@ -14,13 +14,13 @@ public class AppendTimeLeft : MonoBehaviour {
 
 	string GetString()
 	{
-		if(MarketManager.instance.inMarket)
+		if(MarketManager.instance.inWave)
 		{
-			return " seconds until market closes.";
+			return " seconds until wave " + MarketManager.instance.waveNum + " ends.";
 		}
 		else
 		{
-			return " seconds until market opens.";
+			return " seconds until wave " + MarketManager.instance.waveNum + " starts.";
 		}
 	}
 	

@@ -19,7 +19,7 @@ public class MercTrayMain : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 			Destroy(this);
 		}
 	}
-	public static MercTrayElement dragging = null;
+	public static DeployedMerc dragging = null;
 	public static MercSlot hoveringSlot = null;
 	public static MercTrayElement hoveringElement = null;
 	public static Transform parentOfDrag = null;
@@ -40,6 +40,12 @@ public class MercTrayMain : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 			if(r.gameObject.GetComponent<T>() != null)
 			{
 				variable = r.gameObject.GetComponent<T>();
+				return;
+			}
+
+			if(r.gameObject.GetComponentInParent<T>() != null)
+			{
+				variable = r.gameObject.GetComponentInParent<T>();
 				return;
 			}
 		}
@@ -77,35 +83,38 @@ public class MercTrayMain : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 		{
 			foreach(MercTrayElement e in BindingHandler.getTriggeredElements())
 			{
-				e.Trigger(hoveringSlot);
+				if(e.waiting != null)
+					e.waiting.Trigger(hoveringSlot);
 			}
 		}
 	}
 	
 	public void OnPointerDown(PointerEventData pointerEventData)
-    {
-		if(hoveringElement != null && pointerEventData.button == 0)
+  {
+		if(hoveringElement != null && 
+			 hoveringElement.waiting != null &&
+			 pointerEventData.button == 0)
 		{
-			hoveringElement.SetDragging();
-			hoveringElement.updatePositionToMouse();
+			hoveringElement.waiting.SetDragging();
+			hoveringElement.waiting.updatePositionToMouse();
 		}
-    }
+  }
 
 	public void OnPointerUp(PointerEventData pointerEventData)
-    {
-        if(dragging != null && pointerEventData.button == 0)
+	{
+		if(dragging != null && pointerEventData.button == 0)
 		{
 			dragging.StopDragging();
 			dragging = null;
 		}
-    }
+	}
 
 	public MercTrayElement AddMercTrayElement(Mercenary toAdd)
 	{
 		GameObject summoned = GameObject.Instantiate(mercTrayElementPrefab, 
-							   						 Vector3.zero,
-							   						 Quaternion.identity, 
-							   						 transform);
+																								 Vector3.zero,
+																								 Quaternion.identity, 
+																								 transform);
 		MercTrayElement elem = summoned.GetComponentInChildren<MercTrayElement>();
 		elem.behaviour = toAdd.Copy();
 		return elem;

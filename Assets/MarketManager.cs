@@ -5,44 +5,53 @@ using UnityEngine.Assertions;
 
 public class MarketManager : MonoBehaviour 
 {
-	public static int LOCK_MIN = 10;
-	public static float LOCK_PERCENT = 0.75f;
-	public static float timeOutOfMarket = 15.0f;
-	public static float timeInMarket = 30.0f;
+	public static float minWaveLength = 15.0f;
+	public static float maxWaveLength = 45.0f;
+	public static float timeBetweenWaves = 10.0f;
+	static float BONUS_SCALE = 25.0f;
+	public int waveNum = 1;
+	public float baseDifficulty = 0.25f;
+	public float perWaveDifficulty = 0.05f;
+	public float inWaveDifficulty  = 0.01f;
 	public static MarketManager instance;
 	public float timeLeft;
-	public bool inMarket = false;
-	public int[] locks = new int[ResourceStruct.resourceCount];
-	public ResourceStruct GetAllyLockFactor()
+	public bool inWave = false;
+
+	public DamageScalingSpawner spawner;
+
+	public float GetDifficulty()
 	{
-		ResourceStruct toReturn = new ResourceStruct((locks[0]==-1)?0:1,
-								  (locks[1]==-1)?0:1,
-								  (locks[2]==-1)?0:1,
-								  (locks[3]==-1)?0:1,
-								  (locks[4]==-1)?0:1,
-								  (locks[5]==-1)?0:1,
-								  (locks[6]==-1)?0:1);
-		return toReturn;
+		if(inWave)
+		{
+			float spawningTimeLeft = timeLeft - (maxWaveLength - minWaveLength);
+			if(spawningTimeLeft < 0)
+				return 0;
+			return baseDifficulty + perWaveDifficulty * waveNum + inWaveDifficulty * (minWaveLength - spawningTimeLeft);
+		}
+		else
+			return 0;
 	}
-	public ResourceStruct GetEnemyLockFactor()
-	{
-		return new ResourceStruct((locks[0]==1)?0:1,
-								  (locks[1]==1)?0:1,
-								  (locks[2]==1)?0:1,
-								  (locks[3]==1)?0:1,
-								  (locks[4]==1)?0:1,
-								  (locks[5]==1)?0:1,
-								  (locks[6]==1)?0:1);
-	}
+
 
 	// Use this for initialization
 	void Awake () 
 	{
 		Assert.IsNull(instance);
 		instance = this;
+		timeLeft = 5.0f;
+	}
 
-		timeLeft = timeOutOfMarket;
-		UnSetLocks();
+	int GetTimeBonus()
+	{
+		return Mathf.RoundToInt(timeLeft * BONUS_SCALE);
+	}
+
+	public void EndRoundEarly()
+	{
+		int bonus = GetTimeBonus();
+		ResourceHandler.instance.allyResource.resourceArray[0] += bonus;
+		Debug.Log("Time Bonus: " + bonus.ToString());
+		timeLeft = 0;
 	}
 	
 	// Update is called once per frame
@@ -51,31 +60,18 @@ public class MarketManager : MonoBehaviour
 		timeLeft -= Time.deltaTime;
 		if(timeLeft <= 0)
 		{
-			inMarket = !inMarket;
-			transform.GetChild(0).gameObject.SetActive(!inMarket);
-			if(inMarket)
+			inWave = !inWave;
+			if(inWave)
 			{
-				UnSetLocks();
-				timeLeft = timeInMarket;
+				timeLeft = maxWaveLength;
+				spawner.StartWave();
 			}
 			else
 			{
-				timeLeft = timeOutOfMarket;
+				timeLeft = timeBetweenWaves;
+				spawner.StopWave();
+				++waveNum;
 			}
-		}		
-	}
-
-	public void UnSetLocks()
-	{
-		for(int i = 0; i < ResourceStruct.resourceCount; ++i)
-		{
-			locks[i] = 0;
 		}
-	}
-
-	public void Lock(ResourceEnum toLock, bool side)
-	{
-		locks[(int)toLock] = side ? 1:-1;
-		LockHandler.locks[toLock].lockAnim.SetTrigger("go");
 	}
 }

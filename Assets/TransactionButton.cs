@@ -260,14 +260,16 @@ public class TransactionButton : Unlockable {
 			upgradeable = true;
 		}
 
-		lockedObj.SetActive(false);	
+		if(lockedObj != false)
+			lockedObj.SetActive(false);	
 	}
 
 	public override void Lock()
 	{
 		locked = true;
 		upgradeable = false;
-		lockedObj.SetActive(true);
+		if(lockedObj != false)
+			lockedObj.SetActive(true);
 	}
 	
 	private IEnumerator WaitAndDo()
